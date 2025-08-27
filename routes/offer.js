@@ -8,41 +8,58 @@ const cloudinary = require("cloudinary").v2;
 // GET ALL OFFERS WITH FILTERS AND PAGINATION
 router.get("/offers", async (req, res) => {
   try {
+    console.log(req.query);
     let skip = 0;
     let limit = 10;
 
     const filters = {};
 
+    // Filtres de recherche
     if (req.query.title) {
       filters.product_name = new RegExp(req.query.title, "i");
     }
 
-    if (req.query.priceMax) {
-      filters.product_price = { $lte: Number(req.query.priceMax) };
-    }
-
-    if (req.query.priceMin) {
-      if (filters.product_price) {
+    // Filtres de prix (gestion correcte des deux valeurs)
+    if (req.query.priceMin || req.query.priceMax) {
+      filters.product_price = {};
+      if (req.query.priceMin) {
         filters.product_price.$gte = Number(req.query.priceMin);
-      } else {
-        filters.product_price = { $gte: Number(req.query.priceMin) };
+      }
+      if (req.query.priceMax) {
+        filters.product_price.$lte = Number(req.query.priceMax);
       }
     }
+
+    // Tri
     const sortedObject = {};
     if (req.query.sort) {
       sortedObject.product_price = req.query.sort.replace("price-", "");
+    }
+
+    // Pagination (correction de l'ordre)
+    if (req.query.limit) {
+      limit = Number(req.query.limit);
     }
 
     if (req.query.page) {
       skip = (req.query.page - 1) * limit;
     }
 
+    // Compter le nombre total d'offres avec les filtres
+    const count = await Offer.countDocuments(filters);
+    console.log(count);
+
     const offers = await Offer.find(filters)
-      .select("product_name product_price -_id")
+      .select("product_name product_price product_image _id")
       .sort(sortedObject)
       .limit(limit)
       .skip(skip);
-    return res.status(200).json(offers);
+    console.log(offers);
+
+    return res.status(200).json({
+      count: count,
+      offers: offers,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

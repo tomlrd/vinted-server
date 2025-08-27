@@ -1,10 +1,20 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
+const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
+
+// Configuration CORS
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 
 const startServer = async () => {
