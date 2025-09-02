@@ -9,21 +9,12 @@ dotenv.config();
 
 const stripe = require("stripe")(process.env.STRIPE_API_SECRET);
 
-// Vérifier que Stripe est correctement configuré
-if (!process.env.STRIPE_API_SECRET) {
-  console.error(
-    "❌ ERREUR: STRIPE_API_SECRET n'est pas configuré dans les variables d'environnement"
-  );
-  process.exit(1);
-}
-console.log("✅ Stripe configuré avec succès");
-
 const app = express();
 
 // Configuration CORS
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [process.env.CORS_ORIGIN],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
