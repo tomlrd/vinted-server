@@ -1,0 +1,10 @@
+```env
+PORT=3000
+CORS_ORIGIN=http://localhost:5173/
+MONGODB_URI=mongodb://localhost:27017/
+CLOUDINARY_NAME=xxxxxxxxxx
+CLOUDINARY_API_KEY=xxxxxxxxxxxxx
+CLOUDINARY_API_SECRET=xxxxxxxxxxx
+STRIPE_API_KEY=xxxxxxxxxxxx
+STRIPE_API_SECRET=xxxxxxxxxxxxxxxxx
+```
