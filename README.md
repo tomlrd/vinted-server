@@ -1,7 +1,7 @@
 ```env
 PORT=3000
 CORS_ORIGIN=http://localhost:5173/
-MONGODB_URI=mongodb://localhost:27017/
+MONGODB_URI=mongodb://localhost:27017/vinted
 CLOUDINARY_NAME=xxxxxxxxxx
 CLOUDINARY_API_KEY=xxxxxxxxxxxxx
 CLOUDINARY_API_SECRET=xxxxxxxxxxx
