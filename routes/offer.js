@@ -51,9 +51,7 @@ router.get("/offers", async (req, res) => {
     console.log(count);
 
     const offers = await Offer.find(filters)
-      .select(
-        "product_name product_price product_images _id product_size product_condition product_brand product_color product_city"
-      )
+      .select("product_name product_price product_images _id product_details")
       .populate({
         path: "owner",
         select: "_id account.username account.avatar",
@@ -122,12 +120,13 @@ router.post(
         product_name: title,
         product_description: description,
         product_price: price,
-        product_size: size,
-        product_condition: condition,
-        product_brand: brand,
-        product_color: color,
-        product_city: city,
-        product_details: [], // Garder vide pour les détails supplémentaires
+        product_details: {
+          product_size: size,
+          product_condition: condition,
+          product_brand: brand,
+          product_color: color,
+          product_city: city,
+        },
         product_images: product_images,
         owner: user,
       });
@@ -189,9 +188,7 @@ router.get("/offers/user/:userId", async (req, res) => {
     const { userId } = req.params;
 
     const offers = await Offer.find({ owner: userId })
-      .select(
-        "product_name product_price product_images _id product_size product_condition product_brand product_color product_city"
-      )
+      .select("product_name product_price product_images _id product_details")
       .populate({
         path: "owner",
         select: "_id account.username account.avatar",
