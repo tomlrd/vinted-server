@@ -3,7 +3,20 @@ const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
 const dotenv = require("dotenv");
+
+// Charger les variables d'environnement AVANT d'initialiser Stripe
 dotenv.config();
+
+const stripe = require("stripe")(process.env.STRIPE_API_SECRET);
+
+// Vérifier que Stripe est correctement configuré
+if (!process.env.STRIPE_API_SECRET) {
+  console.error(
+    "❌ ERREUR: STRIPE_API_SECRET n'est pas configuré dans les variables d'environnement"
+  );
+  process.exit(1);
+}
+console.log("✅ Stripe configuré avec succès");
 
 const app = express();
 
@@ -29,9 +42,14 @@ const startServer = async () => {
 
     const userRoutes = require("./routes/user");
     const offerRoutes = require("./routes/offer");
+    const { router: paymentRoutes, initStripe } = require("./routes/payment");
+
+    // Initialiser Stripe dans la route de paiement
+    initStripe(stripe);
 
     app.use(userRoutes);
     app.use(offerRoutes);
+    app.use(paymentRoutes);
 
     app.get("/", (req, res) => {
       try {
